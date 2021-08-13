@@ -112,8 +112,22 @@ app.post("/addBook",  async (req, res) => {
     });
 });
 
+//delete author
+
+app.delete("/deleteAuthor", (req, res) => {
+  pg('authors').where({ uuid: req.body.uuid }).del().then(() => {
+      res.sendStatus(200);
+  })
+});
 
 
+//delete book
+
+app.delete("/deleteBook", (req, res) => {
+  pg('book').where({ uuid: req.body.uuid }).del().then(() => {
+      res.sendStatus(200);
+  })
+});
 
 
 
