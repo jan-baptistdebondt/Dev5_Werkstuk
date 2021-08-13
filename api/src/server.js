@@ -20,7 +20,6 @@ http.Server(app);
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
-    // to support URL-encoded bodies
     extended: true
   })
 );  
@@ -30,6 +29,7 @@ app.get('/test', (req, res) => {
 
   res.status(200).send();
 })
+
 
 //get all authors
 
@@ -57,6 +57,24 @@ app.get('/books', async (req, res) => {
 })
 
 
+//get specific author by uuid
+
+app.get('/author/:uuid', async (req, res) => {
+  const result = await pg.select(['*']).from('authors').where({uuid: req.params.uuid})
+  res.json({
+      res: result
+  })
+})
+
+
+//get specific book by uuid
+
+app.get('/book/:uuid', async (req, res) => {
+  const result = await pg.select(['*']).from('book').where({uuid: req.params.uuid})
+  res.json({
+      res: result
+  })
+})
 
 
 
