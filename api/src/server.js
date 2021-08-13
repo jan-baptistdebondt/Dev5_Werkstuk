@@ -77,6 +77,41 @@ app.get('/book/:uuid', async (req, res) => {
 })
 
 
+//add author
+
+app.post("/addAuthor", (req, res) => {
+  let uuid = Helpers.generateUUID();
+    pg.insert({
+      uuid: uuid,
+      title: req.body.title,
+      description: req.body.description,
+      created_at: new Date(),
+    })
+      .into("books")
+      .then(() => {
+        res.json({ uuid: uuid });
+    });
+});
+
+
+//add book 
+
+app.post("/addBook",  async (req, res) => {
+  let uuid = Helpers.generateUUID();
+  let author = await pg.select(['*']).from('authors').where({uuid: req.params.authorUuid})
+    pg.insert({
+      uuid: uuid,
+      title: req.body.title,
+      author: author[0].name,
+      description: req.body.description,
+      created_at: new Date(),
+    })
+      .into("books")
+      .then(() => {
+        res.json({ uuid: uuid });
+    });
+});
+
 
 
 
@@ -90,6 +125,7 @@ async function initialiseTables() {
           table.increments();
           table.uuid('uuid');
           table.string('title');
+          table.string('author');
           table.string('description');
           table.timestamps(true, true);
         })
