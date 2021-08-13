@@ -7,14 +7,14 @@ const port = 3000
 
 const pg = require('knex')({
   client: 'pg',
-  version: '9.6',      
+  version: '9.6',
   searchPath: ['knex', 'public'],
   connection: process.env.PG_CONNECTION_STRING ? process.env.PG_CONNECTION_STRING : 'postgres://example:example@localhost:5432/test'
 });
 
 
 const app = express();
-http.Server(app); 
+http.Server(app);
 
 
 app.use(bodyParser.json());
@@ -22,7 +22,7 @@ app.use(
   bodyParser.urlencoded({
     extended: true
   })
-);  
+);
 
 
 app.get('/test', (req, res) => {
@@ -60,9 +60,11 @@ app.get('/books', async (req, res) => {
 //get specific author by uuid
 
 app.get('/author/:uuid', async (req, res) => {
-  const result = await pg.select(['*']).from('authors').where({uuid: req.params.uuid})
+  const result = await pg.select(['*']).from('authors').where({
+    uuid: req.params.uuid
+  })
   res.json({
-      res: result
+    res: result
   })
 })
 
@@ -70,9 +72,11 @@ app.get('/author/:uuid', async (req, res) => {
 //get specific book by uuid
 
 app.get('/book/:uuid', async (req, res) => {
-  const result = await pg.select(['*']).from('book').where({uuid: req.params.uuid})
+  const result = await pg.select(['*']).from('book').where({
+    uuid: req.params.uuid
+  })
   res.json({
-      res: result
+    res: result
   })
 })
 
@@ -81,42 +85,50 @@ app.get('/book/:uuid', async (req, res) => {
 
 app.post("/addAuthor", (req, res) => {
   let uuid = Helpers.generateUUID();
-    pg.insert({
+  pg.insert({
       uuid: uuid,
       title: req.body.title,
       description: req.body.description,
       created_at: new Date(),
     })
-      .into("books")
-      .then(() => {
-        res.json({ uuid: uuid });
+    .into("books")
+    .then(() => {
+      res.json({
+        uuid: uuid
+      });
     });
 });
 
 
 //add book 
 
-app.post("/addBook",  async (req, res) => {
+app.post("/addBook", async (req, res) => {
   let uuid = Helpers.generateUUID();
-  let author = await pg.select(['*']).from('authors').where({uuid: req.params.authorUuid})
-    pg.insert({
+  let author = await pg.select(['*']).from('authors').where({
+    uuid: req.params.authorUuid
+  })
+  pg.insert({
       uuid: uuid,
       title: req.body.title,
       author: author[0].name,
       description: req.body.description,
       created_at: new Date(),
     })
-      .into("books")
-      .then(() => {
-        res.json({ uuid: uuid });
+    .into("books")
+    .then(() => {
+      res.json({
+        uuid: uuid
+      });
     });
 });
 
 //delete author
 
 app.delete("/deleteAuthor", (req, res) => {
-  pg('authors').where({ uuid: req.body.uuid }).del().then(() => {
-      res.sendStatus(200);
+  pg('authors').where({
+    uuid: req.body.uuid
+  }).del().then(() => {
+    res.sendStatus(200);
   })
 });
 
@@ -124,9 +136,29 @@ app.delete("/deleteAuthor", (req, res) => {
 //delete book
 
 app.delete("/deleteBook", (req, res) => {
-  pg('book').where({ uuid: req.body.uuid }).del().then(() => {
-      res.sendStatus(200);
+  pg('book').where({
+    uuid: req.body.uuid
+  }).del().then(() => {
+    res.sendStatus(200);
   })
+});
+
+
+//update author
+
+app.patch("/updateAuthor/:uuid", (req, res) => {
+  pg('authors').where({
+    uuid: req.params.uuid
+  }).update(req.body)
+});
+
+
+//update book
+
+app.patch("/updateBook/:uuid", (req, res) => {
+  pg('book').where({
+    uuid: req.params.uuid
+  }).update(req.body)
 });
 
 
@@ -147,7 +179,12 @@ async function initialiseTables() {
           console.log('created table book');
           for (let i = 0; i < 10; i++) {
             const uuid = Helpers.generateUUID();
-            await pg.table('book').insert({ uuid, title: `random element aerjzlazjre number ${i}`, description: `a short description of the book ${i}` })
+            await pg.table('book').insert({
+              uuid,
+              title: `random book ${i}`,
+              author: `author nr ${i}`,
+              description: `a short description of the random book nr ${i}`
+            })
           }
         });
 
@@ -165,9 +202,9 @@ async function initialiseTables() {
           table.timestamps(true, true);
         })
         .then(async () => {
-          console.log('created table authors');          
+          console.log('created table authors');
         });
-        
+
     }
   });
 }
