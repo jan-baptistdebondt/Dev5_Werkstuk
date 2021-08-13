@@ -2,7 +2,6 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const http = require('http');
 const Helpers = require('./utils/helpers.js')
-
 const port = 3000
 
 
@@ -26,65 +25,79 @@ app.use(
   })
 );  
 
+
 app.get('/test', (req, res) => {
 
   res.status(200).send();
 })
 
-app.get('/', async (req, res) => {
+//get all authors
+
+app.get('/authors', async (req, res) => {
   const result = await pg
-    .select(['uuid', 'title', 'created_at'])
-    .from('story')
+    .select('*')
+    .from('authors')
   res.json({
-      res: result
+    res: result
   })
+  res.status(200).send()
 })
 
-app.get('/story/:uuid', async (req, res) => {
+
+//get all books
+
+app.get('/books', async (req, res) => {
   const result = await pg
-    .select(['uuid', 'title', 'created_at'])
-    .from('story')
-    .where({uuid: req.params.uuid})
+    .select('*')
+    .from('book')
   res.json({
-      res: result
+    res: result
   })
+  res.status(200).send()
 })
+
+
+
+
+
+
+
 
 
 async function initialiseTables() {
-  await pg.schema.hasTable('storyblock').then(async (exists) => {
+  await pg.schema.hasTable('book').then(async (exists) => {
     if (!exists) {
       await pg.schema
-        .createTable('storyblock', (table) => {
+        .createTable('book', (table) => {
           table.increments();
           table.uuid('uuid');
-          table.string('content');
-          table.string('story_id');
-          table.integer('order');
+          table.string('title');
+          table.string('description');
           table.timestamps(true, true);
         })
         .then(async () => {
-          console.log('created table storyblock');
+          console.log('created table book');
+          for (let i = 0; i < 10; i++) {
+            const uuid = Helpers.generateUUID();
+            await pg.table('book').insert({ uuid, title: `random element aerjzlazjre number ${i}`, description: `a short description of the book ${i}` })
+          }
         });
 
     }
   });
-  await pg.schema.hasTable('story').then(async (exists) => {
+
+  await pg.schema.hasTable('authors').then(async (exists) => {
     if (!exists) {
       await pg.schema
-        .createTable('story', (table) => {
+        .createTable('authors', (table) => {
           table.increments();
           table.uuid('uuid');
-          table.string('title');
-          table.string('summary');
+          table.string('name');
+          table.string('age');
           table.timestamps(true, true);
         })
         .then(async () => {
-          console.log('created table story');
-          for (let i = 0; i < 10; i++) {
-            const uuid = Helpers.generateUUID();
-            await pg.table('story').insert({ uuid, title: `random element number ${i}` })
-          }
+          console.log('created table authors');          
         });
         
     }
