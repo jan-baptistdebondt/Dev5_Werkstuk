@@ -87,12 +87,12 @@ app.post("/addAuthor", (req, res) => {
   let uuid = Helpers.generateUUID();
   pg.insert({
       uuid: uuid,
-      title: req.body.title,
-      description: req.body.description,
+      name: req.body.name,
+      age: req.body.age,
       created_at: new Date(),
     })
-    .into("books")
-    .then(() => {
+    .into("authors")
+    .then(() => {      
       res.json({
         uuid: uuid
       });
@@ -112,10 +112,10 @@ app.post("/addBook", async (req, res) => {
       title: req.body.title,
       author: author[0].name,
       description: req.body.description,
-      created_at: new Date(),
+      created_at: new Date()
     })
     .into("books")
-    .then(() => {
+    .then(() => {     
       res.json({
         uuid: uuid
       });
