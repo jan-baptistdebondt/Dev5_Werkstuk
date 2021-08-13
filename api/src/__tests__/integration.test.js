@@ -15,3 +15,17 @@ describe('get the books endpoint', () => {
     });
 });
 
+describe('post a new author', () => {
+    test('/addAuthor should respond with statuscode 200', async (complete) => {
+        try {
+            const response = await request.post('/addAuthor').send({
+                name: 'Miyamoto Musashi',
+                age: '60'
+
+            });
+            expect(response.status).toBe(200);
+            complete()
+
+        } catch (e) {}
+    });
+});
