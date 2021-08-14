@@ -21,12 +21,26 @@ describe('post a new author', () => {
     test('/addAuthor should respond with statuscode 200 when a new author is added', async (complete) => {
         try {
             const response = await request.post('/addAuthor').send({
-                name: 'Miyamoto Musashi',
+                name: 'Miyamoto Musashiii',
                 age: '60'
 
             });
             expect(response.status).toBe(200);
             authorID = response.body.uuid;
+            complete()
+
+        } catch (e) {}
+    });
+});
+
+describe('update an author', () => {
+    test('/updateAuthor should respond with statuscode 200 if an author is updated', async (complete) => {
+        try {
+            const response = await request.patch(`/updateAuthor/${authorID}`).send({
+                name: 'Miyamoto Musashi',
+                age: '61'
+            });
+            expect(response.status).toBe(200);
             complete()
 
         } catch (e) {}
@@ -45,3 +59,4 @@ describe('delete an author', () => {
         } catch (e) {}
     });
 });
+

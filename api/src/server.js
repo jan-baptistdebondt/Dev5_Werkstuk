@@ -149,7 +149,9 @@ app.delete("/deleteBook", (req, res) => {
 app.patch("/updateAuthor/:uuid", (req, res) => {
   pg('authors').where({
     uuid: req.params.uuid
-  }).update(req.body)
+  }).update(req.body).then(() => {
+    res.sendStatus(200);
+  })
 });
 
 
@@ -158,7 +160,9 @@ app.patch("/updateAuthor/:uuid", (req, res) => {
 app.patch("/updateBook/:uuid", (req, res) => {
   pg('book').where({
     uuid: req.params.uuid
-  }).update(req.body)
+  }).update(req.body).then(() => {
+    res.sendStatus(200);
+  })
 });
 
 
