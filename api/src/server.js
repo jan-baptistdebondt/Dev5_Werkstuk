@@ -105,7 +105,7 @@ app.post("/addAuthor", (req, res) => {
 app.post("/addBook", async (req, res) => {
   let uuid = Helpers.generateUUID();
   let author = await pg.select(['*']).from('authors').where({
-    uuid: req.params.authorUuid
+    uuid: req.body.authorUuid
   })
   pg.insert({
       uuid: uuid,
@@ -115,7 +115,7 @@ app.post("/addBook", async (req, res) => {
       description: req.body.description,
       created_at: new Date()
     })
-    .into("books")
+    .into("book")
     .then(() => {     
       res.json({
         uuid: uuid
