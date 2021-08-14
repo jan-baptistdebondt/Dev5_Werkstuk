@@ -15,13 +15,29 @@ describe('get the books endpoint', () => {
     });
 });
 
+let authorID;
+
 describe('post a new author', () => {
-    test('/addAuthor should respond with statuscode 200', async (complete) => {
+    test('/addAuthor should respond with statuscode 200 when a new author is added', async (complete) => {
         try {
             const response = await request.post('/addAuthor').send({
                 name: 'Miyamoto Musashi',
                 age: '60'
 
+            });
+            expect(response.status).toBe(200);
+            authorID = response.body.uuid;
+            complete()
+
+        } catch (e) {}
+    });
+});
+
+describe('delete an author', () => {
+    test('/deleteAuthor should respond with statuscode 200 if an author is deleted', async (complete) => {
+        try {
+            const response = await request.delete('/deleteAuthor').send({
+                uuid: authorID
             });
             expect(response.status).toBe(200);
             complete()
