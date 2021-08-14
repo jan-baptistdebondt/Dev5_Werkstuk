@@ -109,6 +109,7 @@ app.post("/addBook", async (req, res) => {
   })
   pg.insert({
       uuid: uuid,
+      authorUuid: author[0].uuid, 
       title: req.body.title,
       author: author[0].name,
       description: req.body.description,
@@ -127,6 +128,9 @@ app.post("/addBook", async (req, res) => {
 app.delete("/deleteAuthor", (req, res) => {
   pg('authors').where({
     uuid: req.body.uuid
+  }).del()
+  pg('book').where({
+    authorUuid: req.body.uuid
   }).del().then(() => {
     res.sendStatus(200);
   })
@@ -174,6 +178,7 @@ async function initialiseTables() {
         .createTable('book', (table) => {
           table.increments();
           table.uuid('uuid');
+          table.uuid('authorUuid');
           table.string('title');
           table.string('author');
           table.string('description');
@@ -207,6 +212,14 @@ async function initialiseTables() {
         })
         .then(async () => {
           console.log('created table authors');
+          for (let i = 0; i < 10; i++) {
+            const uuid = Helpers.generateUUID();
+            await pg.table('authors').insert({
+              uuid,
+              name: `author name ${i}`,
+              age: `${i*10} years old`
+            })
+          }
         });
 
     }
