@@ -78,6 +78,16 @@ describe('end to end test', () => {
         } catch (e) {}
     });
 
+    test('get all books by author uuid', async (complete) => {
+        try {
+            const response = await request.get(`/booksByAuthor/${authorID}`);
+            expect(response.status).toBe(200);
+            expect(typeof response.body).toBe("object");
+            complete()
+
+        } catch (e) {}
+    });
+
     test('delete an author and all linked books', async (complete) => {
         try {
             const response = await request.delete('/deleteAuthor').send({

@@ -94,7 +94,7 @@ app.get('/book/:uuid', async (req, res) => {
 
 /**
  * @params: uuid
- * @returns: all books by authorUuid
+ * @returns: all books by authorUuid         
  **/
 
  app.get('/booksByAuthor/:uuid', async (req, res) => {
