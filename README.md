@@ -50,6 +50,9 @@ Use the following endpoints to create, read, update or delete objects int the au
 `GET /book/:uuid`
     - Returns specific book from the database.
 
+`GET /booksByAuthor/:uuid`
+    - Returns all books with the same author uuid from the database.
+
 `POST /addBook`
     - Creates a new book in the database.
 
