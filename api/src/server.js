@@ -93,6 +93,21 @@ app.get('/book/:uuid', async (req, res) => {
 
 
 /**
+ * @params: uuid
+ * @returns: all books by authorUuid
+ **/
+
+ app.get('/booksByAuthor/:uuid', async (req, res) => {
+  const result = await pg.select(['*']).from('book').where({
+    authorUuid: req.params.uuid
+  })
+  res.json({
+    res: result
+  })
+})
+
+
+/**
  * @params: uuid, name, age 
  * @returns: the uuid of the created author
  **/
