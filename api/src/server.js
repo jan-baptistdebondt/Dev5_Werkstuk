@@ -26,12 +26,14 @@ app.use(
 
 
 app.get('/test', (req, res) => {
-
   res.status(200).send();
 })
 
 
-//get all authors
+/**
+ * @params: none
+ * @returns: all authors in the database
+ **/
 
 app.get('/authors', async (req, res) => {
   const result = await pg
@@ -44,7 +46,10 @@ app.get('/authors', async (req, res) => {
 })
 
 
-//get all books
+/**
+ * @params: none
+ * @returns: all books in the database
+ **/
 
 app.get('/books', async (req, res) => {
   const result = await pg
@@ -57,7 +62,10 @@ app.get('/books', async (req, res) => {
 })
 
 
-//get specific author by uuid
+/**
+ * @params: uuid
+ * @returns: a specific author by uuid
+ **/
 
 app.get('/author/:uuid', async (req, res) => {
   const result = await pg.select(['*']).from('authors').where({
@@ -69,7 +77,10 @@ app.get('/author/:uuid', async (req, res) => {
 })
 
 
-//get specific book by uuid
+/**
+ * @params: uuid
+ * @returns: a specific book by uuid
+ **/
 
 app.get('/book/:uuid', async (req, res) => {
   const result = await pg.select(['*']).from('book').where({
@@ -81,7 +92,10 @@ app.get('/book/:uuid', async (req, res) => {
 })
 
 
-//add author
+/**
+ * @params: uuid, name, age 
+ * @returns: the uuid of the created author
+ **/
 
 app.post("/addAuthor", (req, res) => {
   let uuid = Helpers.generateUUID();
@@ -92,7 +106,7 @@ app.post("/addAuthor", (req, res) => {
       created_at: new Date(),
     })
     .into("authors")
-    .then(() => {      
+    .then(() => {
       res.json({
         uuid: uuid
       });
@@ -100,7 +114,10 @@ app.post("/addAuthor", (req, res) => {
 });
 
 
-//add book 
+/**
+ * @params: uuid, authorUuid title, author, description
+ * @returns: the uuid of the created book
+ **/
 
 app.post("/addBook", async (req, res) => {
   let uuid = Helpers.generateUUID();
@@ -109,21 +126,24 @@ app.post("/addBook", async (req, res) => {
   })
   pg.insert({
       uuid: uuid,
-      authorUuid: author[0].uuid, 
+      authorUuid: author[0].uuid,
       title: req.body.title,
       author: author[0].name,
       description: req.body.description,
       created_at: new Date()
     })
     .into("book")
-    .then(() => {     
+    .then(() => {
       res.json({
         uuid: uuid
       });
     });
 });
 
-//delete author
+/**
+ * @params: uuid
+ * @returns: statuscode 200
+ **/
 
 app.delete("/deleteAuthor", (req, res) => {
   pg('authors').where({
@@ -137,7 +157,10 @@ app.delete("/deleteAuthor", (req, res) => {
 });
 
 
-//delete book
+/**
+ * @params: uuid
+ * @returns: statuscode 200
+ **/
 
 app.delete("/deleteBook", (req, res) => {
   pg('book').where({
@@ -148,7 +171,10 @@ app.delete("/deleteBook", (req, res) => {
 });
 
 
-//update author
+/**
+ * @params: uuid, name, age 
+ * @returns: statuscode 200
+ **/
 
 app.patch("/updateAuthor/:uuid", (req, res) => {
   pg('authors').where({
@@ -159,7 +185,10 @@ app.patch("/updateAuthor/:uuid", (req, res) => {
 });
 
 
-//update book
+/**
+ * @params: uuid, authorUuid title, author, description
+ * @returns: statuscode 200
+ **/
 
 app.patch("/updateBook/:uuid", (req, res) => {
   pg('book').where({
